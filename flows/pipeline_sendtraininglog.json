@@ -1,7 +1,7 @@
 {
   "flow": {
     "name": "REST API for sending reminder of Trainig log completion",
-    "disabled": false,
+    "disabled": true,
     "autoGC": false,
     "expandRouteProperties": true,
     "cpuInterval": 15000
