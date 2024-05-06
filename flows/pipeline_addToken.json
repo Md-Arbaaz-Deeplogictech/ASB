@@ -1,0 +1,57 @@
+{
+    "flow": {
+        "name":"REST API for authenticate user and register mantis token ",
+        "disabled": true,
+        "autoGC":false,
+        "expandRouteProperties": true,
+        "cpuInterval": 15000
+    },
+    "listener": {
+        "type":"rest_listener",
+        "isMessageGenerator": true,
+        "host": "127.0.0.1",
+        "port":9090,
+        "url":"/registerUser",
+        "allow_origin": "*",
+        "timeout": 120000
+    },
+    "route0":{
+        "type":"js",
+        "dependencies" : "listener",
+        "module":"/home/ajay/Desktop/ASB/custom/header.js"
+    },
+    "route1":{
+        "type" : "rest",
+        "dependencies" : "route0",
+        "url":"https://tekmonks.mantishub.io/api/rest/users/me"
+    },
+    "route2":{
+        "type":"js",
+        "dependencies":"route1",
+        "module":"/home/ajay/Desktop/ASB/custom/auth.js"
+    },
+    "route3":{
+        "type":"filereader",
+        "dependencies":"route2",
+        "path":"/home/ajay/Desktop/ASB/output.json"
+    },
+    "route4":{
+        "type":"js",
+        "dependencies":"route3",
+        "module":"/home/ajay/Desktop/ASB/custom/update.js"
+    },
+    "route5":{
+        "type":"filewriter",
+        "dependencies":"route4",
+        "path":"/home/ajay/Desktop/ASB/output.json"
+    },
+    "route6":{
+        "type":"js",
+        "dependencies":"route5",
+        "module":"/home/ajay/Desktop/ASB/custom/result.js"
+    },
+    "output":{
+        "type":"rest_responder",
+		"dependencies":[ "route6"]
+    }
+}

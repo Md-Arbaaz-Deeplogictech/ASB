@@ -1,0 +1,54 @@
+{
+    "flow": {
+        "name":"REST API for sending reminder of open mantises",
+        "disabled": true,
+        "autoGC":false,
+        "expandRouteProperties": true,
+        "cpuInterval": 15000
+    },
+    "listener": {
+        "type":"rest_listener",
+        "isMessageGenerator": true,
+        "host": "127.0.0.1",
+        "port":8081,
+        "url":"/emailIssues",
+        "allow_origin": "*",
+        "timeout": 120000
+    },
+    "route0":{
+        "type":"js",
+        "dependencies" : "listener",
+        "module":"/Users/user/Desktop/ASB/custom/header.js"
+    },
+    "route1":{
+        "type" : "rest",
+        "dependencies" : ["route0"],
+        "url":"https://tekmonks.mantishub.io/api/rest/issues?filter_id=assigned&page_size=40&page=1"
+    },
+    "route2":{
+        "type" : "js",
+        "dependencies": ["route1"],
+        "js" : "message.mantis_issues = message.content.data.issues.map(({id,summary})=>({id,title:summary,link:`https://tekmonks.mantishub.io/view.php?id=${id}`})); message.content = {}; message.content.issues = message.mantis_issues; delete message.mantis_issues"
+    },
+    "route3":{
+        "type":"mustache",
+        "dependencies":["route2"],
+        "template":"/Users/user/Desktop/ASB/custom/templates/issuesTable.html"
+    },
+    "route4":{
+        "type" : "js",
+        "dependencies": ["route3"],
+        "js" : "message.issuesTable = message.content; message.content = {}; message.content.html = message.issuesTable; delete message.issuesTable; message.content.to = message.env.to"
+    },
+    "output":{
+        "type":"email",
+        "dependencies" : ["route4"],
+		"host":"smtp.mailgun.org",
+		"port": 465,
+		"secure": true,
+		"user": "postmaster@mg.monboss.com",
+		"password": "37988ae084005e7fc3752655a85384eab377f9d0ae08e96cb2d4fd64ddcd511a6b70ee149c2c074a57238f00e06f61d3be19c45ca451e8928684",
+		"from": "watchman@mg.monbosss.com",
+		"title": "Your Active Mantises"
+    }
+}

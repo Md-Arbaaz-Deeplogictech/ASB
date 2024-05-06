@@ -1,0 +1,29 @@
+{
+	"flow":{
+		"name": "Email to File via IMAP listener",
+		"disabled": true,
+		"expandRouteProperties": true,
+		"cpuInterval": 1000
+	},
+	"listener": {
+		"type":"imap", 
+		"isMessageGenerator": true,
+		"mailbox":"INBOX",
+		"user": "[full email address here, usually]",
+		"password": "[password here]",
+		"host": "imap.gmail.com",
+		"port": 993,
+		"tls": true,
+		"maxmessages": 10,
+		"maxEmailSize": 20971520,
+		"partsToInject": ["envelope", "text", "html", "attachments"]
+	},
+	"output": {
+		"type": "filewriter",
+        "dependencies":"listener",
+		"path":"{{ESB_DIR}}/email.json",
+		"prettyJSON": 4,
+		"append": false,
+		"writeCloseTimeout": 5000
+	}
+}

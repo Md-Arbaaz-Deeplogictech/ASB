@@ -1,0 +1,49 @@
+{
+  "flow": {
+    "name": "REST API for sending reminder of Trainig log completion",
+    "disabled": false,
+    "autoGC": false,
+    "expandRouteProperties": true,
+    "cpuInterval": 15000
+  },
+  "listener": {
+    "type": "rest_listener",
+    "isMessageGenerator": true,
+    "host": "127.0.0.1",
+    "port": 9090,
+    "url": "/traininglog",
+    "allow_origin": "*",
+    "timeout": 120000
+  },
+  "route0": {
+    "type":"filereader",
+    "dependencies":"listener",
+    "path":"/Users/user/Desktop/ASB/output.json"
+  },
+  "route1":{
+    "type":"js",
+    "dependencies":"route0",
+    "module":"/Users/user/Desktop/ASB/custom/traininglog.js"
+  },
+  "route2":{
+    "type":"mustache",
+    "dependencies":"route1",
+    "template":"/Users/user/Desktop/ASB/custom/templates/traininglog.html"
+},
+"route3":{
+  "type" : "js",
+  "dependencies": ["route2"],
+  "js" : "message.traininglog=message.content;message.content={};message.content.html=message.traininglog;message.content.bcc=message.env.list"
+},
+"output":{
+  "type":"email",
+  "dependencies" : ["route3"],
+"host":"smtp.mailgun.org",
+"port": 465,
+"secure": true,
+"user": "postmaster@mg.monboss.com",
+"password": "37988ae084005e7fc3752655a85384eab377f9d0ae08e96cb2d4fd64ddcd511a6b70ee149c2c074a57238f00e06f61d3be19c45ca451e8928684",
+"from": "watchman@mg.monbosss.com",
+"title": "Your Reminder for Training log"
+}
+}
