@@ -22,9 +22,9 @@ jspm_packages/
 .node_repl_history
 
 # ESB work directories
-!custom/README
-!custom/multipath_interceptor.js
-custom
+# !custom/README
+# !custom/multipath_interceptor.js
+# custom
 
 # Sensitive flows
 flows/pipeline_payments.json
